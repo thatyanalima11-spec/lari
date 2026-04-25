@@ -1,30 +1,121 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Para Larissa 💛</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- React -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-  <!-- Babel (interpreta JSX no navegador) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Tailwind (pra manter o visual bonito) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #fbcfe8, #fef3c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      max-width: 400px;
+      text-align: center;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .next { background: #f472b6; color: white; }
+    .back { background: #e5e7eb; }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <!-- Importa seu arquivo JSX -->
-  <script type="text/babel" src="presente_digital_interativo_melhor_amiga.jsx"></script>
+<div class="card">
+  <h1 id="title"></h1>
+  <p id="text"></p>
+  <button id="musicBtn">Tocar música 🎵</button>
+  <br>
+  <button class="back" onclick="prev()">Voltar</button>
+  <button class="next" onclick="next()">Próximo</button>
+</div>
 
-  <!-- Inicializa o React -->
-  <script type="text/babel">
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+<audio id="music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-love.mp3">
+</audio>
+
+<script>
+  const screens = [
+    {
+      title: "Amodelio 💛",
+      text: "Antes de qualquer coisa... toca na música aqui embaixo."
+    },
+    {
+      title: "Uma surpresa pra você",
+      text: "Larissa, mesmo de longe... isso aqui é um pedacinho de mim pra você."
+    },
+    {
+      title: "15 anos de história",
+      text: "A gente construiu algo raro. E em todo esse tempo, você nunca soltou minha mão."
+    },
+    {
+      title: "Você é incrível",
+      text: "Eu sempre disse que queria ser como você. Hoje eu entendo ainda mais o porquê."
+    },
+    {
+      title: "Sua força",
+      text: "A vida nunca foi fácil... mas você sempre se reinventou. E isso sempre me inspirou profundamente."
+    },
+    {
+      title: "Uma nova fase 🤍",
+      text: "Agora você é mãe... e o Ethan já tem a sorte de ter você."
+    },
+    {
+      title: "Pro Ethan 🍼",
+      text: "Oi, pequeno... se você for metade do que sua mãe é, você já vai ser incrível."
+    },
+    {
+      title: "Pra sempre",
+      text: "Independente da distância... você sempre vai ser casa pra mim."
+    },
+    {
+      title: "Feliz aniversário 🎉",
+      text: "Eu te amo, Amodelio. Que essa fase seja cheia de amor e momentos lindos com o Ethan."
+    }
+  ];
+
+  let step = 0;
+
+  function render() {
+    document.getElementById("title").innerText = screens[step].title;
+    document.getElementById("text").innerText = screens[step].text;
+  }
+
+  function next() {
+    if (step < screens.length - 1) {
+      step++;
+      render();
+    }
+  }
+
+  function prev() {
+    if (step > 0) {
+      step--;
+      render();
+    }
+  }
+
+  document.getElementById("musicBtn").onclick = () => {
+    document.getElementById("music").play();
+  };
+
+  render();
+</script>
+
 </body>
 </html>
