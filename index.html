@@ -52,7 +52,6 @@
     font-weight: bold;
   }
 
-  /* animação */
   .fade {
     opacity: 0;
     transform: translateY(40px);
@@ -69,8 +68,8 @@
 <body>
 
 <!-- 🎵 MÚSICA LOCAL -->
-<audio id="music" loop>
-  <source src="fruto-do-tempo-clipe-oficial.mp3" type="audio/mpeg">
+<audio id="music" preload="auto">
+  <source src="./fruto-do-tempo-clipe-oficial.mp3" type="audio/mpeg">
 </audio>
 
 <div class="music-btn" onclick="toggleMusic()">
@@ -92,8 +91,8 @@
 </div>
 
 <div class="section fade">
-  <h1>Quase 15 anos de história </h1>
-  <p>Nós construimos algo raro, um amor verdadeiro e leal.</p>
+  <h1>Quase 15 anos de história</h1>
+  <p>Nós construímos algo raro, um amor verdadeiro e leal.</p>
   <p>E em todo esse tempo, você nunca soltou minha mão e eu nunca soltei a sua.</p>
   <img src="https://via.placeholder.com/300x300?text=Memória">
 </div>
@@ -101,43 +100,44 @@
 <div class="section fade">
   <h1>Você é incrível</h1>
   <p>Eu sempre disse que tinha orgulho de você e queria ser como você.</p>
-    <p>Hoje eu entendo ainda mais o porquê.</p>
+  <p>Hoje eu entendo ainda mais o porquê.</p>
 </div>
 
 <div class="section fade">
   <h1>Sua força é admirável</h1>
   <p>A vida nunca foi fácil... mas você sempre se reinventou e deu um jeito de se manter de pé.</p>
-    <p>E isso sempre me inspirou profundamente.</p>
+  <p>E isso sempre me inspirou profundamente.</p>
   <img src="https://via.placeholder.com/300x300?text=Força">
 </div>
 
 <div class="section fade">
   <h1>Uma nova fase 🤍</h1>
-  <p>Agora você é mãe, e me dói muito não está ao seu lado...</p>
-  <p>Mas, eu sei a sorte que o Ethan tem de ter você.</p>
+  <p>Agora você é mãe, e me dói muito não estar ao seu lado...</p>
+  <p>Mas eu sei a sorte que o Ethan tem de ter você.</p>
 </div>
 
 <div class="section fade">
   <h1>Para o meu pequeno Ethan 🍼</h1>
   <p>Oi, amor da minha vida todinha... Você é uma benção em nossa vida, não vejo a hora de lhe conhecer e abraçar vocês!</p>
-    <p>E, logo mais, você vai entender que o abraço da sua mãe, é o melho lugar do mundo.</p>
-    <p> Pela mãe que você tem,você vai ser INCRÍVEL ✨</p>
+  <p>E, logo mais, você vai entender que o abraço da sua mãe é o melhor lugar do mundo.</p>
+  <p>Pela mãe que você tem, você vai ser INCRÍVEL ✨</p>
 </div>
 
 <div class="section fade">
   <h1>Pra sempre</h1>
-  <p>Independente da distância, do tempo, da alegria, da tristeza, da saúde, da doença, da riqueza ou da pobreza... </p>
-    <p>Você sempre vai ser casa pra mim.</p>
+  <p>Independente da distância, do tempo, da alegria, da tristeza, da saúde, da doença, da riqueza ou da pobreza...</p>
+  <p>Você sempre vai ser casa pra mim.</p>
 </div>
 
 <div class="section fade">
   <h1>Feliz Vida Amor da Minha Vida Todinha!!!</h1>
   <p>Eu te amo mil milhões 💜</p>
-    <p>Que essa fase seja cheia de amor e momentos lindos com o Ethan e com sua família.</p>
-      <p>Que seja um ano maravilhoso pra você, que você tenha muita saúde, felicidade e paz! Eu te desejo as melhores coisas do mundo, porque você merece!</p>
+  <p>Que essa fase seja cheia de amor e momentos lindos com o Ethan e com sua família.</p>
+  <p>Que seja um ano maravilhoso pra você, com muita saúde, felicidade e paz.</p>
+  <p>Eu te desejo as melhores coisas do mundo, porque você merece!</p>
 </div>
 
-<!-- SCRIPT ANIMAÇÃO + MÚSICA -->
+<!-- SCRIPT -->
 <script>
   const elements = document.querySelectorAll('.fade');
 
@@ -153,17 +153,18 @@
 
   // música
   const music = document.getElementById("music");
-  let playing = false;
+  const btn = document.querySelector(".music-btn");
 
   function toggleMusic() {
-    if (!playing) {
-      music.play();
-      document.querySelector(".music-btn").innerText = "⏸️ Pausar música";
-      playing = true;
+    if (music.paused) {
+      music.play().then(() => {
+        btn.innerText = "⏸️ Pausar música";
+      }).catch(() => {
+        alert("Clica novamente pra ativar a música 💜");
+      });
     } else {
       music.pause();
-      document.querySelector(".music-btn").innerText = "🎵 Tocar música";
-      playing = false;
+      btn.innerText = "🎵 Tocar música";
     }
   }
 </script>
