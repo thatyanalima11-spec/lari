@@ -52,7 +52,7 @@
     font-weight: bold;
   }
 
-  /* ANIMAÇÃO */
+  /* animação */
   .fade {
     opacity: 0;
     transform: translateY(40px);
@@ -68,15 +68,16 @@
 
 <body>
 
+<!-- 🎵 MÚSICA LOCAL -->
 <audio id="music" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-love.mp3">
+  <source src="fruto-do-tempo-clipe-oficial.mp3" type="audio/mpeg">
 </audio>
 
-<div class="music-btn" onclick="document.getElementById('music').play()">
-  🎵 Música
+<div class="music-btn" onclick="toggleMusic()">
+  🎵 Tocar música
 </div>
 
-<!-- SEÇÕES -->
+<!-- CONTEÚDO -->
 
 <div class="section fade">
   <h1>Amodeio 💜</h1>
@@ -126,7 +127,7 @@
   <p>Eu te amo, Amodeio 💜. Que essa fase seja cheia de amor e momentos lindos com o Ethan.</p>
 </div>
 
-<!-- SCRIPT DA ANIMAÇÃO -->
+<!-- SCRIPT ANIMAÇÃO + MÚSICA -->
 <script>
   const elements = document.querySelectorAll('.fade');
 
@@ -136,11 +137,25 @@
         entry.target.classList.add('show');
       }
     });
-  }, {
-    threshold: 0.2
-  });
+  }, { threshold: 0.2 });
 
   elements.forEach(el => observer.observe(el));
+
+  // música
+  const music = document.getElementById("music");
+  let playing = false;
+
+  function toggleMusic() {
+    if (!playing) {
+      music.play();
+      document.querySelector(".music-btn").innerText = "⏸️ Pausar música";
+      playing = true;
+    } else {
+      music.pause();
+      document.querySelector(".music-btn").innerText = "🎵 Tocar música";
+      playing = false;
+    }
+  }
 </script>
 
 </body>
