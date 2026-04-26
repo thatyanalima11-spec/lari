@@ -22,7 +22,7 @@
       max-width: 400px;
       text-align: center;
     }
-    button {
+    #button {
       margin-top: 15px;
       padding: 15px 20px;
       border-radius: 10px;
@@ -41,8 +41,8 @@
   <p id="text"></p>
   <button id="musicBtn">Tocar música 🎵</button>
   <br>
-  <button class="back" onclick="prev()">Voltar</button>
-  <button class="next" onclick="next()">Próximo</button>
+  <button class="back" id="button" onclick="prev()">Voltar</button>
+  <button class="next" id="button" onclick="next()">Próximo</button>
 </div>
 
 <audio id="music" loop>
