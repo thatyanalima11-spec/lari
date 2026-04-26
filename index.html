@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Para Larissa 💜 </title>
+<title>Para Larissa 💜</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
@@ -44,12 +44,24 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #f472b6;
+    background: #a855f7;
     color: white;
     padding: 12px 16px;
     border-radius: 50px;
     cursor: pointer;
     font-weight: bold;
+  }
+
+  /* ANIMAÇÃO */
+  .fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .fade.show {
+    opacity: 1;
+    transform: translateY(0);
   }
 </style>
 </head>
@@ -66,53 +78,70 @@
 
 <!-- SEÇÕES -->
 
-<div class="section">
-  <h2>Amodelio 💜</h2>
+<div class="section fade">
+  <h1>Amodeio 💜</h1>
   <p>Antes de qualquer coisa... coloca uma música e vai descendo devagar.</p>
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Uma surpresa pra você</h1>
   <p>Larissa, mesmo de longe... isso aqui é um pedacinho de mim pra você.</p>
   <img src="https://via.placeholder.com/300x300?text=Vocês+2">
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>15 anos de história</h1>
   <p>A gente construiu algo raro. E em todo esse tempo, você nunca soltou minha mão.</p>
   <img src="https://via.placeholder.com/300x300?text=Memória">
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Você é incrível</h1>
   <p>Eu sempre disse que queria ser como você. Hoje eu entendo ainda mais o porquê.</p>
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Sua força</h1>
   <p>A vida nunca foi fácil... mas você sempre se reinventou. E isso sempre me inspirou profundamente.</p>
   <img src="https://via.placeholder.com/300x300?text=Força">
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Uma nova fase 🤍</h1>
   <p>Agora você é mãe... e o Ethan já tem a sorte de ter você.</p>
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Pro Ethan 🍼</h1>
   <p>Oi, pequeno... se você for metade do que sua mãe é, você já vai ser incrível.</p>
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Pra sempre</h1>
   <p>Independente da distância... você sempre vai ser casa pra mim.</p>
 </div>
 
-<div class="section">
+<div class="section fade">
   <h1>Feliz aniversário 🎉</h1>
-  <p>Eu te Amodeio. Que essa fase seja cheia de amor e momentos lindos com o Ethan.</p>
+  <p>Eu te amo, Amodeio 💜. Que essa fase seja cheia de amor e momentos lindos com o Ethan.</p>
 </div>
+
+<!-- SCRIPT DA ANIMAÇÃO -->
+<script>
+  const elements = document.querySelectorAll('.fade');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      }
+    });
+  }, {
+    threshold: 0.2
+  });
+
+  elements.forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
