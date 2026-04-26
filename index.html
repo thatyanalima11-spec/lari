@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Larissa 💜</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --purple: #7C3AED;
+      --pink: #EC4899;
+      --gold: #F59E0B;
+      --rose: #FB7185;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: linear-gradient(160deg, #0F0520 0%, #1a0535 40%, #2D0B55 70%, #180428 100%);
+      background-attachment: fixed;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* CANVAS */
+    #canvas-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* PROGRESS BAR */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(to right, var(--purple), var(--pink), var(--gold));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* MUSIC PLAYER */
+    #music-player {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    #music-label {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      max-width: 210px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #music-btn {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      border: none; cursor: pointer;
+      font-size: 26px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.55);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    #music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 32px rgba(236,72,153,0.6);
+    }
+    #music-btn.playing::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--pink);
+      animation: pulse-ring 1.8s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+
+    /* SECTIONS */
+    .section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .section-inner {
+      max-width: 680px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* GLASS */
+    .glass {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 44px 36px;
+    }
+
+    /* HERO */
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 12vw, 100px);
+      line-height: 1.15;
+      background: linear-gradient(135deg, #ffffff 0%, #fca5a5 35%, #c084fc 70%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: hero-glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes hero-glow {
+      from { filter: drop-shadow(0 0 20px rgba(192,132,252,0.3)); }
+      to   { filter: drop-shadow(0 0 40px rgba(236,72,153,0.5)); }
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 48px;
+    }
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: bounce-arrow 2.2s ease-in-out infinite;
+    }
+    @keyframes bounce-arrow {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(10px); }
+    }
+
+    /* HEADINGS */
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 44px);
+      line-height: 1.3;
+      background: linear-gradient(135deg, #ffffff 0%, #e879f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    .divider {
+      width: 56px; height: 3px;
+      background: linear-gradient(to right, var(--purple), var(--pink));
+      border-radius: 99px;
+      margin: 14px auto 20px;
+    }
+    .body-text {
+      font-size: clamp(15px, 2.2vw, 17px);
+      color: rgba(255,255,255,0.78);
+      line-height: 1.85;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    /* =============================================
+       SINGLE PHOTO (foto única — sem carrossel)
+       ============================================= */
+    .single-photo {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: 28px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      background: #0a0015;
+      cursor: zoom-in;
+    }
+    .single-photo img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;   /* foto completa, sem corte */
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .single-photo:hover img { transform: scale(1.04); }
+
+    /* =============================================
+       CAROUSEL
+       ============================================= */
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: 28px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      position: relative;
+      background: #0a0015; /* fundo escuro para letterboxing */
+    }
+    .carousel-slide img {
+      width: 100%;
+      height: 380px;
+      object-fit: contain;   /* foto completa, sem corte */
+      display: block;
+      cursor: zoom-in;
+      transition: transform 0.4s ease;
+    }
+    .carousel-slide:hover img { transform: scale(1.04); }
+    .car-btn {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.14);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 22px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+    .car-btn:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-50%) scale(1.1);
+    }
+    .car-btn.prev { left: 10px; }
+    .car-btn.next { right: 10px; }
+    .car-dots {
+      position: absolute;
+      bottom: 12px; width: 100%;
+      display: flex; justify-content: center; gap: 5px;
+      z-index: 10;
+    }
+    .car-dots span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .car-dots span.active {
+      background: white;
+      width: 20px;
+      border-radius: 3px;
+    }
+    .car-counter {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(0,0,0,0.48);
+      backdrop-filter: blur(4px);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      z-index: 10;
+    }
+
+    /* =============================================
+       POLAROID (inline, no conteúdo)
+       ============================================= */
+    .polaroid-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .polaroid {
+      background: white;
+      padding: 10px 10px 38px;
+      border-radius: 3px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      width: 150px;
+      cursor: zoom-in;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      transform: rotate(var(--rot, 0deg));
+      flex-shrink: 0;
+    }
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.15) translateY(-12px);
+      z-index: 10;
+      box-shadow: 0 24px 60px rgba(124,58,237,0.45);
+    }
+    .polaroid .pol-img {
+      width: 100%;
+      height: 130px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .polaroid img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;   /* foto completa no polaroid */
+      display: block;
+    }
+    .polaroid span {
+      display: block;
+      color: #666;
+      font-size: 10px;
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+      font-family: 'Lato', sans-serif;
+    }
+
+    /* =============================================
+       POLAROIDS DECORATIVOS (papel de parede)
+       ============================================= */
+    .bg-pol {
+      position: absolute;
+      background: white;
+      padding: 7px 7px 28px;
+      border-radius: 2px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      width: 105px;
+      z-index: 1;
+      cursor: zoom-in;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0.38;
+    }
+    .bg-pol:hover {
+      opacity: 0.85;
+      transform: rotate(0deg) scale(1.12) !important;
+      z-index: 5;
+    }
+    .bg-pol img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* =============================================
+       SPECIAL IMAGE (diana-leona)
+       ============================================= */
+    .hero-img-wrap {
+      position: relative;
+      max-width: 380px;
+      margin: 28px auto 0;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(124,58,237,0.45);
+      cursor: zoom-in;
+      background: #0a0015;
+    }
+    .hero-img-wrap img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;   /* foto completa */
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .hero-img-wrap:hover img { transform: scale(1.04); }
+    .hero-img-caption {
+      padding: 12px 16px 16px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+      background: rgba(10,0,21,0.7);
+    }
+
+    /* LIGHTBOX */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.93);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+    }
+    #lightbox.open { display: flex; }
+    #lb-img {
+      max-width: 92vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow: 0 0 80px rgba(124,58,237,0.4);
+      animation: lb-pop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes lb-pop {
+      from { opacity: 0; transform: scale(0.75); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    #lb-close {
+      position: absolute;
+      top: 18px; right: 22px;
+      font-size: 36px; cursor: pointer;
+      color: rgba(255,255,255,0.75);
+      background: none; border: none;
+      line-height: 1;
+      transition: color 0.2s, transform 0.2s;
+    }
+    #lb-close:hover { color: white; transform: scale(1.2) rotate(90deg); }
+    .lb-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      font-size: 26px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .lb-nav:hover { background: rgba(255,255,255,0.25); }
+    #lb-prev { left: 18px; }
+    #lb-next { right: 18px; }
+    #lb-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%; transform: translateX(-50%);
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.4);
+      padding: 4px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* FADE IN */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(55px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* LOVE BUTTON */
+    .love-btn {
+      background: linear-gradient(135deg, rgba(236,72,153,0.25), rgba(124,58,237,0.25));
+      border: 1px solid rgba(236,72,153,0.45);
+      color: white;
+      padding: 12px 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+      font-family: 'Lato', sans-serif;
+      margin-top: 28px;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .love-btn:hover {
+      background: linear-gradient(135deg, rgba(236,72,153,0.45), rgba(124,58,237,0.45));
+      transform: scale(1.06);
+      box-shadow: 0 8px 30px rgba(236,72,153,0.35);
+    }
+
+    /* FLOAT HEARTS */
+    .float-em {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      animation: float-up-out 3.2s ease-out forwards;
+    }
+    @keyframes float-up-out {
+      0%   { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-320px) scale(0.4) rotate(30deg); opacity: 0; }
+    }
+
+    /* SECTION BG ACCENTS */
+    .s-accent-purple { background: radial-gradient(ellipse at 25% 50%, rgba(124,58,237,0.18) 0%, transparent 65%); }
+    .s-accent-pink   { background: radial-gradient(ellipse at 75% 50%, rgba(236,72,153,0.18) 0%, transparent 65%); }
+    .s-accent-gold   { background: radial-gradient(ellipse at 50% 30%, rgba(245,158,11,0.12) 0%, transparent 65%); }
+
+    @media (max-width: 580px) {
+      .glass { padding: 30px 20px; }
+      .carousel-slide img { height: 240px; }
+      .polaroid { width: 120px; }
+      .lb-nav { display: none; }
+      #music-label { display: none; }
+
+      /* Polaroids de fundo menores no celular */
+      .bg-pol {
+        width: 72px;
+        opacity: 0.28;
+      }
+      .bg-pol img {
+        height: 62px;
+      }
+      /* Empurra os do lado esquerdo pra não cobrir o card */
+      .bg-pol[style*="left"] {
+        left: 0 !important;
+      }
+      .bg-pol[style*="right"] {
+        right: 0 !important;
+      }
+      /* Garante que ficam atrás do conteúdo */
+      .bg-pol { z-index: 0; pointer-events: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas-bg"></canvas>
+  <div id="progress-bar"></div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox">
+    <button id="lb-close">×</button>
+    <button class="lb-nav" id="lb-prev">‹</button>
+    <img id="lb-img" src="" alt="">
+    <button class="lb-nav" id="lb-next">›</button>
+    <div id="lb-caption">1 / 1</div>
+  </div>
+
+  <!-- MUSIC -->
+  <audio id="music" loop preload="auto">
+    <source src="Bruno Mars - Talking To The Moon (Official Lyric Video) - Bruno Mars (youtube).mp3" type="audio/mpeg">
+  </audio>
+  <div id="music-player">
+    <div id="music-label">🎵 Talking To The Moon — Bruno Mars</div>
+    <button id="music-btn" onclick="toggleMusic()">🎵</button>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="section hero s-accent-purple">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:8%; left:2%; transform:rotate(-7deg)"><img src="IMG-20170912-WA0036.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="top:12%; right:2%; transform:rotate(6deg)"><img src="IMG-20170912-WA0042.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:10%; left:3%; transform:rotate(4deg)"><img src="IMG-20170912-WA0047.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:8%; right:3%; transform:rotate(-5deg)"><img src="IMG-20170912-WA0048.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <h1>Amodeio 💜</h1>
+      <p class="hero-sub">Antes de qualquer coisa... dá o play na música e vai descendo devagar.</p>
+      <div class="scroll-hint">
+        <span>Role para baixo</span>
+        <span style="font-size:20px; margin-top:4px;">↓</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SURPRESA ===== -->
+  <section class="section s-accent-pink">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:6%; left:1%; transform:rotate(-8deg)"><img src="IMG-20170912-WA0051.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:8%; right:2%; transform:rotate(7deg)"><img src="IMG-20170912-WA0052.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Uma surpresa pra você</h2>
+        <div class="divider"></div>
+        <p class="body-text">Lari, mesmo de longe... isso aqui é um pedacinho de mim pra você.</p>
+        <p class="body-text">Espero que sinta o meu amor daí, e que o universo lhe abrace por mim 🌟</p>
+
+        <!-- foto única — sem carrossel -->
+        <div class="single-photo">
+          <img src="C360_2017-05-16-19-59-34-865.jpg" loading="lazy" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 15 ANOS ===== -->
+  <section class="section s-accent-purple">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:5%; left:1%; transform:rotate(5deg)"><img src="IMG-20171006-WA0036.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="top:10%; right:2%; transform:rotate(-6deg)"><img src="IMG-20171008-WA0034.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Quase 15 anos de história</h2>
+        <div class="divider"></div>
+        <p class="body-text">Nós construímos algo raro, um amor verdadeiro e leal.</p>
+        <p class="body-text">E em todo esse tempo, você nunca soltou minha mão e eu nunca soltei a sua.</p>
+
+        <div class="carousel">
+          <div class="carousel-track">
+            <div class="carousel-slide"><img src="C360_2017-05-12-18-21-19-188.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-12-18-21-22-791.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-12-18-21-35-149.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-12-18-21-39-724.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-16-19-59-02-165.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-16-19-59-10-222.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="C360_2017-05-16-19-59-24-231.jpg" loading="lazy" alt=""></div>
+          </div>
+          <button class="car-btn prev">‹</button>
+          <button class="car-btn next">›</button>
+          <div class="car-dots"></div>
+          <div class="car-counter">1 / 7</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INCRÍVEL ===== -->
+  <section class="section s-accent-gold">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:7%; right:1%; transform:rotate(-9deg)"><img src="IMG_20170923_184735.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:9%; left:2%; transform:rotate(8deg)"><img src="IMG-20180218-WA0056.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Você é incrível</h2>
+        <div class="divider"></div>
+        <p class="body-text">Eu sempre disse que tinha orgulho de você e queria ser como você.</p>
+        <p class="body-text">Hoje eu entendo ainda mais o porquê.</p>
+
+        <!-- foto única — sem carrossel -->
+        <div class="single-photo">
+          <img src="IMG_20190202_103306614.jpg" loading="lazy" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FORÇA ===== -->
+  <section class="section s-accent-pink">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:5%; left:1%; transform:rotate(-6deg)"><img src="IMG-20180218-WA0059.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:7%; right:2%; transform:rotate(5deg)"><img src="IMG_20180708_211427_392.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass" style="margin-bottom:24px;">
+        <h2>Sua força é admirável</h2>
+        <div class="divider"></div>
+        <p class="body-text">A vida nunca foi fácil...</p>
+        <p class="body-text">Mas você sempre se reinventou e deu um jeito de se manter de pé.</p>
+        <p class="body-text">Isso sempre me inspirou profundamente!</p>
+      </div>
+      <div class="polaroid-row">
+        <div class="polaroid" style="--rot:-3deg">
+          <div class="pol-img"><img src="WhatsApp Image 2026-04-25 at 23.24.42.jpeg" loading="lazy" alt=""></div>
+          <span>Memórias 🎞</span>
+        </div>
+        <div class="polaroid" style="--rot:2deg">
+          <div class="pol-img"><img src="WhatsApp Image 2026-04-25 at 23.24.42 (1).jpeg" loading="lazy" alt=""></div>
+          <span>Amor 💃</span>
+        </div>
+        <div class="polaroid" style="--rot:-1.5deg">
+          <div class="pol-img"><img src="20231014_163031.jpg" loading="lazy" alt=""></div>
+          <span>Saudade ✨</span>
+        </div>
+        <div class="polaroid" style="--rot:3deg">
+          <div class="pol-img"><img src="IMG-20191214-WA0038.jpg" loading="lazy" alt=""></div>
+          <span>Juntas 💙💜</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NOVA FASE / MÃE ===== -->
+  <section class="section s-accent-purple">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:6%; right:1%; transform:rotate(7deg)"><img src="sdiv.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Uma nova fase 🤍</h2>
+        <div class="divider"></div>
+        <p class="body-text">Agora você é mãe, e me dói muito não estar ao seu lado...</p>
+        <p class="body-text">Mas eu sei a sorte que o Ethan tem de ter você.</p>
+
+        <!-- foto única — sem carrossel -->
+        <div class="single-photo">
+          <img src="WhatsApp Image 2026-04-25 at 23.24.42 (2).jpeg" loading="lazy" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ETHAN ===== -->
+  <section class="section s-accent-gold">
+    <!-- bg polaroids decorativos -->
+    <div class="bg-pol" style="top:8%; left:2%; transform:rotate(-7deg)"><img src="IMG-20190320-WA0004.jpg" loading="lazy" alt=""></div>
+    <div class="bg-pol" style="bottom:10%; right:2%; transform:rotate(6deg)"><img src="IMG_20190217_153439_240.jpg" loading="lazy" alt=""></div>
+
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Para o meu pequeno Ethan 🍼</h2>
+        <div class="divider"></div>
+        <p class="body-text">Oi, amor da minha vida todinha... Você é uma benção em nossa vida.</p>
+        <p class="body-text">O abraço da sua mãe é o melhor lugar do mundo.</p>
+        <p class="body-text">Pela mãe que você tem, você vai ser INCRÍVEL ✨</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PARA SEMPRE ===== -->
+  <section class="section s-accent-pink">
+    <div class="section-inner fade-up">
+      <div class="glass">
+        <h2>Pra sempre 🌙☀️</h2>
+        <div class="divider"></div>
+        <p class="body-text">Independente da distância, do tempo... você sempre vai ser casa pra mim.</p>
+
+        <div class="hero-img-wrap" id="diana-wrap">
+          <img src="diana-leona.jpg" alt="Diana e Leona">
+          <div class="hero-img-caption">Eu sendo a lua… e você o sol. Sempre juntas, de qualquer jeito.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL ===== -->
+  <section class="section s-accent-gold" id="final-section">
+    <div class="section-inner fade-up">
+      <div class="glass" style="padding: 60px 40px;">
+        <h2 style="font-size: clamp(24px, 4.5vw, 40px);">Feliz Vida Amor da Minha Vida Todinha!!!</h2>
+        <div class="divider"></div>
+        <div class="carousel" style="margin-top:28px;">
+          <div class="carousel-track">
+            <div class="carousel-slide"><img src="IMG_20190217_153725_917.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0047.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190320-WA0002.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190202-WA0062.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0049.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG_20190202_075558_134.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0056.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG_20180708_211440_199.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="Screenshot_20190417-221034.png" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG_20190205_193657_885.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0057.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0058.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0059.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG-20190707-WA0062.jpg" loading="lazy" alt=""></div>
+            <div class="carousel-slide"><img src="IMG_20190217_153624_978.jpg" loading="lazy" alt=""></div>
+          </div>
+          <button class="car-btn prev">‹</button>
+          <button class="car-btn next">›</button>
+          <div class="car-dots"></div>
+          <div class="car-counter">1 / 15</div>
+        </div>
+        <p class="body-text" style="font-size: 20px; margin-top: 20px;">Eu te amo mil milhões 💜</p>
+        <button class="love-btn" onclick="burstHearts(this)">💙 Clique aqui para receber amor! 💙</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AINDA POR AQUI ===== -->
+  <section class="section s-accent-gold">
+    <div class="section-inner fade-up">
+      <div class="glass" style="margin-bottom:24px;">
+        <h2>Ainda por aqui????</h2>
+        <div class="divider"></div>
+
+        <!-- foto única — sem carrossel -->
+        <div class="single-photo">
+          <img src="IMG-20180907-WA0038.jpg" loading="lazy" alt="">
+        </div>
+        <p class="body-text" style="margin-top:16px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOA NOITE ===== -->
+  <section class="section s-accent-gold">
+    <div class="section-inner fade-up">
+      <div class="glass" style="margin-bottom:24px;">
+        <h2>Brinks kkkkkkk!</h2>
+        <h2>Boa noite, nega!</h2>
+        <div class="divider"></div>
+
+        <!-- foto única — sem carrossel -->
+        <div class="single-photo">
+          <img src="IMG-20180805-WA0035.jpg" loading="lazy" alt="">
+        </div>
+        <p class="body-text" style="margin-top:16px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ===== CANVAS PARTICLES =====
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = ['#C084FC','#FB7185','#818CF8','#F472B6','#A78BFA'];
+    const particles = Array.from({length: 90}, () => {
+      const p = {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: -(Math.random() * 0.4 + 0.15),
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        life: 0,
+        maxLife: Math.random() * 220 + 80,
+      };
+      p.life = Math.random() * p.maxLife;
+      return p;
+    });
+    (function animLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.life++;
+        if (p.life >= p.maxLife || p.y < -5) {
+          p.x = Math.random() * canvas.width;
+          p.y = canvas.height + 5;
+          p.life = 0;
+          p.maxLife = Math.random() * 220 + 80;
+        }
+        const alpha = 0.7 * (1 - p.life / p.maxLife);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(animLoop);
+    })();
+
+    // ===== SCROLL PROGRESS =====
+    window.addEventListener('scroll', () => {
+      const st = document.documentElement.scrollTop;
+      const sh = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('progress-bar').style.width = (st / sh * 100) + '%';
+    }, {passive: true});
+
+    // ===== FADE-IN OBSERVER =====
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+    // ===== MUSIC (autoplay via JS) =====
+    const music = document.getElementById('music');
+    const musicBtn = document.getElementById('music-btn');
+    function setPlaying(playing) {
+      musicBtn.classList.toggle('playing', playing);
+      musicBtn.textContent = playing ? '⏸' : '🎵';
+    }
+    function tryPlay() {
+      music.play().then(() => setPlaying(true)).catch(() => {
+        const handler = () => {
+          music.play().then(() => setPlaying(true));
+          ['click','touchstart','scroll'].forEach(ev => document.removeEventListener(ev, handler));
+        };
+        ['click','touchstart','scroll'].forEach(ev =>
+          document.addEventListener(ev, handler, {once: true, passive: true}));
+      });
+    }
+    window.addEventListener('load', tryPlay);
+    function toggleMusic() {
+      if (music.paused) { music.play(); setPlaying(true); }
+      else { music.pause(); setPlaying(false); }
+    }
+
+    // ===== LIGHTBOX =====
+    let allImgs = [];
+    let lbIdx = 0;
+
+    function collectImages() {
+      const seen = new Set();
+      document.querySelectorAll('img').forEach(img => {
+        if (!img.src || seen.has(img.src)) return;
+        seen.add(img.src);
+        allImgs.push(img.src);
+      });
+    }
+    function openLb(src) {
+      lbIdx = allImgs.indexOf(src);
+      if (lbIdx < 0) lbIdx = 0;
+      document.getElementById('lb-img').src = src;
+      document.getElementById('lb-caption').textContent = `${lbIdx + 1} / ${allImgs.length}`;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLb() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function lbNav(dir) {
+      lbIdx = (lbIdx + dir + allImgs.length) % allImgs.length;
+      const img = document.getElementById('lb-img');
+      img.style.animation = 'none'; img.offsetHeight; img.style.animation = '';
+      img.src = allImgs[lbIdx];
+      document.getElementById('lb-caption').textContent = `${lbIdx + 1} / ${allImgs.length}`;
+    }
+    document.getElementById('lb-close').onclick = closeLb;
+    document.getElementById('lb-prev').onclick = () => lbNav(-1);
+    document.getElementById('lb-next').onclick = () => lbNav(1);
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === document.getElementById('lightbox')) closeLb();
+    });
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft') lbNav(-1);
+      if (e.key === 'ArrowRight') lbNav(1);
+    });
+
+    // ===== MAKE ALL IMAGES CLICKABLE =====
+    window.addEventListener('load', () => {
+      collectImages();
+      document.querySelectorAll('img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => openLb(img.src));
+      });
+    });
+
+    // ===== CAROUSELS =====
+    document.querySelectorAll('.carousel').forEach(car => {
+      const track = car.querySelector('.carousel-track');
+      const slides = track.querySelectorAll('.carousel-slide');
+      const n = slides.length;
+      const dotsEl = car.querySelector('.car-dots');
+      const counter = car.querySelector('.car-counter');
+      let idx = 0, timer;
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('span');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => go(i));
+        dotsEl.appendChild(dot);
+      });
+      const dots = dotsEl.querySelectorAll('span');
+
+      function go(i) {
+        idx = ((i % n) + n) % n;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach(d => d.classList.remove('active'));
+        dots[idx].classList.add('active');
+        counter.textContent = `${idx + 1} / ${n}`;
+        clearInterval(timer);
+        startAuto();
+      }
+      function startAuto() { timer = setInterval(() => go(idx + 1), 4200); }
+
+      car.querySelector('.prev').addEventListener('click', () => go(idx - 1));
+      car.querySelector('.next').addEventListener('click', () => go(idx + 1));
+      car.addEventListener('mouseenter', () => clearInterval(timer));
+      car.addEventListener('mouseleave', startAuto);
+
+      let sx = 0;
+      track.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive: true});
+      track.addEventListener('touchend', e => {
+        const dx = sx - e.changedTouches[0].clientX;
+        if (Math.abs(dx) > 45) go(dx > 0 ? idx + 1 : idx - 1);
+      }, {passive: true});
+
+      startAuto();
+    });
+
+    // ===== BURST HEARTS =====
+    function burstHearts(btn) {
+      const emojis = ['💜','💛','🌸','⭐','✨','🫶','💕','🌟'];
+      for (let i = 0; i < 22; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'float-em';
+          el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          el.style.cssText = `
+            left: ${Math.random() * 80 + 10}vw;
+            bottom: 15vh;
+            font-size: ${Math.random() * 18 + 14}px;
+            animation-duration: ${Math.random() * 1.5 + 2.2}s;
+          `;
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 4000);
+        }, i * 80);
+      }
+      btn.textContent = '💙💜 Te amo mais! 💜💙';
+      setTimeout(() => btn.textContent = '💙 Clique aqui para receber amor! 💙', 3500);
+    }
+
+    // First section visible immediately
+    document.querySelector('.fade-up').classList.add('visible');
+  </script>
+</body>
+</html>
